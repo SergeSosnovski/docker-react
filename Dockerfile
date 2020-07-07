@@ -13,9 +13,12 @@ RUN npm run build
 
 #Step 2: "Run Phase" -createa a second image based on "nginx" server,copy the output from "npm run build" folder inside the temporary image and start "nginx" server
 FROM nginx
+EXPOSE 80
 COPY --from=builder /app/build /usr/share/nginx/html
 
 #To run it:
 #docker build . 
 #docker  run -p 8080:80 <image_id>
 #nginx uses port 80 inside the container as a default
+
+#Elasticbeanstalk uses "EXPOSE" to do port mapping
