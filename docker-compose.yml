@@ -1,0 +1,43 @@
+#"docker-comnpose up" is creating 2 containers, "web" container is responsibele for hosting server, "tests" container is responsible for running tests
+version: "3"
+services:
+  web:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"]
+#use docker-compose files to specify the details of the docker run command (shorthand option)
+#run docker-compose : docker-compose up
+#create and run docker-compose(take in the new changes to the docker-compose file): docker-compose up --build
+#shut down docker-compose: docker-compose down
+#can combine the two: docker-compose down && docker-compose up --build
+
+#Running Tests with Live updates on the test files:
+#Solution 1: In order to run addional command, i.e attach new command, to a running container use "exec"
+#In this case we can attach "npm run test" to update "App.test.js" file while the container is running
+#not a good long term solution, but ok to execute once (has to be done form a different window)
+#docker exec -it <running_container_id> npm run test
+#Solution 2: Instead we use can use a second service called "tests", described above
+#Result: solution 1 can use control input line but need second window and running container ID. Solution 2 cannot use input line ,but can implement inside docker-compose
+
+#Can use docker attach to forward command direcly into the running docker container
+#attaching "our terminal" input to the "stdin"/"stdout"/"stderr" of the running container
+#docker attach dee835db6e37
+#will not really work with docker-compose
+
+#Notes:
+#"docker exec" ataches a single command to the running container
+#"docker attach" attaches the "terminal" input line to the "stdin"/"stdout"/"stderr" of the running container

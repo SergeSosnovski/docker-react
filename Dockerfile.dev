@@ -1,0 +1,50 @@
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start"]
+
+
+#This file is used as a part of the feature branch work, before the code is going thourhg the "pull request" to be added to the master branch
+
+#In Development:
+#npm run start
+#In Production:
+#npm run build
+
+#Since this file no longer has the default name of "Dockerfile", running "docker build . " will not work 
+#Use the following command for custom docker file: "docker build -f Dockerfile.dev . "
+
+#we dont really need to have "node_modules" as a part of the docker image bacasue it will be create when "npm install" will be run:
+#delete the "node_modules" folder from the folder directory
+
+#starting and running docker container
+#docker run CONTAINER_ID
+#if the application is using ports then the ports have to matched between the local computer and the docker container
+#docker run -p 3000:3000 CONTAINER_ID
+#starting and running the container in the interactive mode , if run in the interactive mode the application will not self quit 
+#docker run -it -p 3000:3000 CONTAINER_ID
+
+#To allow docker to acquire the latest changes to the local files without conststly createing new image,usage docker volumes
+#In the essense docker volume is a reference from the docker container folder to the local folder , similar to port mapping
+#docker run -it -p 3000:3000 -v /app/node_modules -v $(pwd):/app <image_id>
+#"-v $(pwd):/app" - get the path to the present working directory, take the folder "frontend" and everything inside of it, mapp it to the "app" folder inside of the container
+#"-v /app/node_modules" - since "node_modules" exists in the container but does not exist in the Dockerfile, and we reference this container as a part of the "-v $(pwd):/app", we need to create a bookmark for this specific folder
+#using ":" is mapping
+#not using ":", means a placeholder
+#docker-compose.yml shorthands the "docker run ... " line
+
+#Extra Notes:
+#npm run start - Starts up a development server. For development use only
+#npm run test - Runs tests associated with the project
+#npm run build - Build a production version of the application
+
+#Runs test
+#docker build Dockerfile.dev .
+#docker run -it <image_id npm run test
+
