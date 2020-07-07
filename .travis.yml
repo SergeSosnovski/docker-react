@@ -9,3 +9,27 @@ before_install:
 
 script:
   - docker run -e CI=true sosnovskiserge/docker-react npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "docker"
+  env: "Docker-env"
+  bucket_name: "elasticbeanstalk-us-east-1-813381322653"
+  bucket_path: "docker"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+#Before_install: need to build the project and tag it so that we do need to copy pase the container ID
+
+#Script: run the script with tests after the application was build
+
+#Deploy: the deploy envionment under the AWS
+#app: the name of the docker application from the AWS
+#bucket_name: the name of the folder that will be created once the application is deployed on the AWS,the default is the name of the application
+#bucket_name: look for S3 , fill path of the application under your region
+#region: the AWS region under which this S3 environment was created
+#provider: the AWS environment , in this case "elasticbeanstalk"
+#on : branch: master , trigger the AWS deployment on when we push the code to the master branch
+
