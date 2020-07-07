@@ -2,9 +2,9 @@
 #Should use production, not development, server and should not worry about copying the new code
 
 #Step1: "Build Phase" - use alpine to create a temporary base image, get "node_module" and run "npm run build" command
-FROM node:alpine as builder
+FROM node:alpine
 WORKDIR '/app'
-COPY package.json .
+COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
@@ -14,7 +14,7 @@ RUN npm run build
 #Step 2: "Run Phase" -createa a second image based on "nginx" server,copy the output from "npm run build" folder inside the temporary image and start "nginx" server
 FROM nginx
 EXPOSE 80
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=0 /app/build /usr/share/nginx/html
 
 #To run it:
 #docker build . 
